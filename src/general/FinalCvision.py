@@ -18,7 +18,7 @@ def pistola(entradafinal):
     scale = cv.CreateImage((image_size), snapshot.depth, 1)
     storage = cv.CreateMemStorage()
     cv.EqualizeHist(scale, scale)
-    cascade2 = cv.Load("pistoladetect.xml")
+    cascade2 = cv.Load("detector_pistolas.xml")
     pistola = cv.HaarDetectObjects(scale, cascade2, storage, 1.1, 2, 0, (120, 120))
     if pistola:
         # Vamos cara por cara
