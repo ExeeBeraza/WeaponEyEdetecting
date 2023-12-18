@@ -1,10 +1,7 @@
-import cv  # Libreria OpenCV
-from math import *
-from sys import argv  # toma argumento
-import random
-import Image, Image  # Libreria Image de PIL
+import math
+
+import cv2 as cv
 import numpy as np
-import math  # libreria para operacioio matematicas
 
 
 def detect_painting(image):
@@ -14,25 +11,25 @@ def detect_painting(image):
     imbina = binarizar(image)
 
 
-def pistola(entradafinal):
-    scale = cv.CreateImage((image_size), snapshot.depth, 1)
-    storage = cv.CreateMemStorage()
-    cv.EqualizeHist(scale, scale)
-    cascade2 = cv.Load("detector_pistolas.xml")
-    pistola = cv.HaarDetectObjects(scale, cascade2, storage, 1.1, 2, 0, (120, 120))
-    if pistola:
-        # Vamos cara por cara
-        contadodepisto = 0
-        for i in pistola:
-            # Dibujamos figuras en cara
-            contadodepisto += 1
-            cv.Rectangle(entradafinal, (i[0][0], i[0][1]), ((i[0][0] + i[0][2]), (i[0][1] + i[0][2])),
-                         cv.RGB(0, 255, 0), 10, 8, 0)
-            center_point = ((i[0][0] * 2 + i[0][2]) / 2, (i[0][1] * 2 + i[0][2]) / 2)
-            cv.Circle(entradafinal, center_point, 10, cv.CV_RGB(0, 0, 255), 1)
-            # imagen.ellipse((i[0]-aux, i[1]-aux, i[0]+aux, i[1]+aux), fill=(0,255,0))
-            cv.PutText(entradafinal, ("Pistola # " + str(contadodepisto)), (center_point), font, 255)  # Draw the text
-    return entradafinal
+def pistola(imagen_a_procesar):
+    # Objeto que carga la configuracion para detectar la pistola
+    cascade_classifier = cv.CascadeClassifier(
+        '../../detectores/detector_pistolas.xml')  # TODO: Agregar variable entorno
+
+    pistolas_encontradas = cascade_classifier.detectMultiScale(imagen_a_procesar, 1.1, 9)
+
+    if len(pistolas_encontradas) > 0:
+        cant_pistolas_encontradas = 0
+        for (x, y, ancho, alto) in pistolas_encontradas:
+            # TODO: Cambiar color del rectangulo
+            cv.rectangle(imagen_a_procesar, (x, y), (x + alto, y + ancho), cv.COLOR_BAYER_BGGR2RGB, 5)
+            cv.putText(imagen_a_procesar, ("Pistola # " + str(cant_pistolas_encontradas)), (x, y), cv.FONT_ITALIC, 1.1,
+                       (255, 255, 255), 2)
+            cant_pistolas_encontradas += 1
+    else:
+        print("No encontre pistolas")
+
+    return imagen_a_procesar
 
 
 def mascara(image):
@@ -85,8 +82,8 @@ def normalizar(image, minimo, maximo, conv):  # normalizamos
     ancho, alto = image.size
     for i in range(ancho):
         for j in range(alto):
-            p = int(floor((conv[i, j] - minimo) * prop))
-            pixels[i, j] = (p, p, p);
+            p = int(math.floor((conv[i, j] - minimo) * prop))
+            pixels[i, j] = (p, p, p)
 
     return image
 
@@ -155,19 +152,21 @@ def vecindad(i, j, lista, matriz):  # filtrado
 
 
 def main():
-    cam = cv.CaptureFromCAM(0)  # captura la imagen de webcam con OpenCV
+    imagen_pistola = cv.imread('<Agregar ruta imagen>')  # TODO: Agregar ruta de imagen
+    # TODO: En caso de que no encuentre la imagen
+
     while True:
-        im = cv.QueryFrame(cam)  # lanza la camara
-        snapshot = im
-        image_size = cv.GetSize(snapshot)
-        cv.SaveImage("test.png", im)
-        imagen = cv.CreateImage(image_size, cv.IPL_DEPTH_8U, 3)
-        snapshot = pistola(snapshot)
-        detect_painting("test.png")
-        snapshot = pistola(snapshot)
-        cv.ShowImage('Camara', snapshot)
-        if cv.WaitKey(30) == 27:
-            break
+        imagen_en_blanco_y_negro = cv.cvtColor(imagen_pistola, cv.COLOR_BGR2GRAY)
+        pistola_extraida = pistola(imagen_en_blanco_y_negro)
+
+        # Muestra la imagen en una ventana
+        cv.imshow('Pistola', pistola_extraida)
+
+        # TODO: Agregar mas objetos para reconocer
+
+        # Espera a que el usuario toque una tecla
+        cv.waitKey(0)
+        break
 
 
 main()
