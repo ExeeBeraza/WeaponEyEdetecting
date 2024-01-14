@@ -87,6 +87,8 @@
 
 ### Proceso de Inferencia
 
+Retomar [video](https://www.youtube.com/watch?v=Hb5xHY4e2Mg&t=792s).
+
 ### Pruebas
 
 Proximamente...
