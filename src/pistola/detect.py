@@ -7,8 +7,8 @@ import pathlib
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
-model = torch.hub.load('ultralytics/yolov5', 'custom',
-                       path='F:/Dev/AyudaExe/ProyectoFinalIA2023/models/modelo_detector_pistolas.pt')
+model = torch.hub.load('ultralytics/yolov5', 'custom', force_reload=True,
+                       path='') # TODO:Manejar esto en variables de entorno
 
 
 cap = cv.imread('../../resources/pistolas/glock.jpg')
