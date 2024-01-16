@@ -85,9 +85,14 @@
   files.download('./runs/train/exp/weights/best.pt')
   ```
 
-### Proceso de Inferencia
+### Proceso de inferencia
 
-Retomar [video](https://www.youtube.com/watch?v=Hb5xHY4e2Mg&t=792s).
+Para utilizar la red neuronal hay que colocar el archivo .pt en la carpeta _models_.
+
+Los modelos utilizados para este proyecto pueden encontrarse en el siguiente link a google drive.
+
+[Modelos redes neuronales.](https://drive.google.com/drive/folders/14C4Mi0fD345leLG6lBx9Awd5VhI7j3eU?usp=sharing)
+
 
 ### Pruebas
 
